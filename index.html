@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=0.65">
+    <title>Shift Scheduler Pro - Full Firebase</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-shell">
+        <div id="initialLoginViewWrapper" class="main-content-area"><div class="app-container"><div id="initialLoginView" class="container view-section"><h1>Shift Scheduler Login</h1><div class="input-group"><label for="loginUserSelect">Select Your Name:</label><select id="loginUserSelect"><option value="">-- Select Name --</option></select></div><div class="input-group"><label for="loginPassword">Password:</label><input type="password" id="loginPassword"></div><button id="coworkerLoginBtn">Login</button><p id="initialLoginError" class="error-message"></p></div></div></div>
+
+        <div id="userShiftViewWrapper" class="main-content-area hidden">
+            <div class="app-container">
+                <div id="shiftTradeRequestsSection" class="container view-section hidden" style="border-left: 4px solid #ffc107;">
+                    <h3>Shift Trade Requests</h3>
+                    <div id="tradeRequestsList">
+                        <p style="font-style:italic; color:#777;">You have no pending trade requests.</p>
+                    </div>
+                </div>
+
+                <div id="latestPublishedScheduleSection" class="container hidden">
+                    <h2 id="latestPublishedScheduleTitle">Latest Published Schedule</h2>
+                    <div class="table-responsive-wrapper">
+                        <table id="latestPublishedScheduleTable"><thead><tr><th>Day</th><th>9:30 - 13:00</th><th>13:00 - 16:30</th></tr></thead><tbody></tbody></table>
+                    </div>
+                    <div id="userLatestCustomShiftsSection" class="hidden" style="margin-top: 20px;">
+                        <h4>Other Shifts/Events This Week</h4>
+                        <div class="table-responsive-wrapper">
+                            <table id="userLatestCustomShiftsTable">
+                                <thead><tr><th>Day</th><th>Date</th><th>Time</th><th>Description</th><th>Assigned</th></tr></thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="myUpcomingShiftsSection" class="container view-section hidden">
+                    <h3>My Upcoming Approved Shifts</h3>
+                    <p style="text-align:center; font-size:0.9em; font-style:italic; margin-top:-5px; margin-bottom:15px;">Here you can manage your assigned shifts.</p>
+                    <div class="table-responsive-wrapper">
+                        <table id="myUpcomingShiftsTable">
+                            <thead>
+                                <tr>
+                                    <th>Day</th>
+                                    <th>Date</th>
+                                    <th>Time & Description</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Shifts will be populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="userShiftView" class="container view-section">
+                    <div class="top-bar">
+                        <h2 id="welcomeUserName">Welcome, [User]!</h2>
+                        <div>
+                            <button id="myShiftHistoryBtn" class="approve">My Shift History</button>
+                            <button id="myAccountBtn">My Account</button>
+                            <button id="accessManagerPanelBtn" class="purple hidden">Manager Panel</button>
+                            <button id="userLogoutBtn" class="deny">Logout</button>
+                        </div>
+                    </div>
+                    <div class="week-navigation" id="userApplicationWeekNav" style="margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px;">
+                        <button id="prevUserAppWeekBtn" class="small-action">« Prev App Week</button>
+                        <strong id="currentUserAppWeekDisplay" style="margin: 0 10px; font-size: 1.1em;"></strong>
+                        <button id="nextUserAppWeekBtn" class="small-action">Next App Week »</button>
+                    </div>
+                    <h3>Available Shifts & Your Applications</h3>
+                    <div class="table-responsive-wrapper">
+                        <table id="userShiftsTable"><thead><tr><th>Day</th><th>Date</th><th>Time & Description</th><th>Status</th><th>Action</th></tr></thead><tbody></tbody></table>
+                    </div>
+                </div>
+                <div id="userCustomShiftsSection" class="container view-section hidden" style="margin-top: 20px;">
+                    <h3>Custom Shifts & Events Applications</h3>
+                    <div class="table-responsive-wrapper">
+                        <table id="userCustomShiftsTable">
+                            <thead><tr><th>Day</th><th>Date</th><th>Time & Description</th><th>Status</th><th>Action</th></tr></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="myAccountSettingsSection" class="container view-section hidden">
+                    <h2>My Account Settings</h2>
+                    <div id="changeMyPasswordSection">
+                        <h3>Change My Password</h3>
+                        <div class="input-group"><label for="currentMyPasswordInput">Current Password:</label><input type="password" id="currentMyPasswordInput"></div>
+                        <div class="input-group"><label for="newMyPasswordInput">New Password:</label><input type="password" id="newMyPasswordInput"></div>
+                        <div class="input-group"><label for="confirmNewMyPasswordInput">Confirm New Password:</label><input type="password" id="confirmNewMyPasswordInput"></div>
+                        <button id="submitMyPasswordChangeBtn">Change Password</button>
+                        <p id="myPasswordChangeError" class="error-message"></p><p id="myPasswordChangeSuccess" class="success-message"></p>
+                    </div>
+                    <hr style="margin: 30px 0;">
+                    <div id="manageMyEmailSection">
+                        <h3>Manage My Email Address</h3>
+                        <p id="myEmailDisplay" class="email-display-text">Your current email: Not set</p>
+                        <div class="input-group"><label for="myEmailInput">Email Address:</label><input type="email" id="myEmailInput" placeholder="Enter your email"></div>
+                        <button id="saveMyEmailBtn">Save Email</button><button id="deleteMyEmailBtn" class="delete hidden">Delete Email</button>
+                        <p id="myEmailError" class="error-message"></p><p id="myEmailSuccess" class="success-message"></p>
+                    </div>
+                    <div style="margin-top: 25px; padding-top: 15px; border-top: 1px dashed #ccc; text-align: center;">
+                        <h4>Email Test</h4>
+                        <button id="sendTestEmailBtn" class="approve">Send Test Email to My Address</button>
+                        <p id="testEmailStatus" style="font-size: 0.9em; margin-top: 10px;"></p>
+                    </div>
+                     <button id="closeMyAccountSettingsBtn" class="deny" style="margin-top: 20px; display: block; margin-left: auto; margin-right: auto; width: auto;">Close Account Settings</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="managerDashboardView" class="manager-dashboard hidden">
+            <div class="manager-top-bar"><h1>Manager Dashboard</h1><div><span id="managerLoggedInAs" style="margin-right:20px;"></span><button id="switchToUserViewBtn" class="secondary small-action">My Shifts View</button><button id="managerDashboardLogoutBtn" class="secondary small-action">Logout</button></div></div>
+            <div class="manager-body">
+                <div class="manager-sidebar">
+                    <h4>Week Navigation</h4>
+                    <div class="week-navigation"><button id="prevWeekBtnMgr" class="small-action">« Prev Wk</button><button id="jumpToTargetWeekBtnMgr" class="small-action">Next Wk</button><button id="nextWeekBtnMgr" class="small-action">Further Wk »</button></div>
+                    <p style="text-align:center; font-size:0.9em; margin-bottom:5px;" id="managerSidebarWeekDisplay"></p>
+                    <hr>
+                    <h4>Week Actions</h4>
+                    <button id="publishWeekBtn" class="publish small-action" style="width:100%; margin-bottom:5px;">Publish Week</button>
+                    <div id="publishStatusIndicator" class="published-status-indicator">Status: Not Published</div>
+                    <button id="clearWeekShiftsBtn" class="delete small-action" style="width:100%; margin-top:5px;">Clear All Week Shifts</button>
+                    <hr>
+                    <h4>Shift Creation</h4>
+                     <div style="text-align: center; margin-bottom: 10px;"><button id="showCustomShiftModalBtn" class="approve small-action" style="width:100%;">Add Custom Shift/Event</button></div>
+                    <hr>
+                    <h4>Management</h4>
+                    <button id="showCoworkerManagerModalBtn" class="secondary small-action" style="width:100%; margin-bottom:5px;">Manage Coworkers</button>
+                    <button id="showHoursSummaryModalBtn" class="secondary small-action" style="width:100%; margin-bottom:10px;">View Hours Summary</button>
+                    <hr>
+                    <h4>Admin Settings</h4>
+                    <button id="showChangeMasterPassBtn" class="secondary small-action" style="width:100%; margin-bottom:10px;">Change Master Password</button>
+                    <button id="resetAllDataBtn" class="delete small-action" style="width:100%;">Reset All Data</button>
+                </div>
+                <div class="manager-main-content">
+                    <div id="changeMasterPasswordSection" class="container hidden" style="border: 1px solid #ffc107; background: #fff9e6;"><h3>Change Master Admin Password</h3><div class="input-group"><label for="currentMasterPassword">Current Master Password:</label><input type="password" id="currentMasterPassword"></div><div class="input-group"><label for="newMasterPassword">New Master Password:</label><input type="password" id="newMasterPassword"></div><div class="input-group"><label for="confirmNewMasterPassword">Confirm New Password:</label><input type="password" id="confirmNewMasterPassword"></div><button id="submitChangeMasterPassBtn">Change Password</button><button id="cancelChangeMasterPassBtn" class="secondary">Cancel</button><p id="changeMasterPassError" class="error-message"></p><p id="changeMasterPassSuccess" class="success-message"></p></div>
+                    <div class="manager-schedule-preview"><h3 id="managerSchedulePreviewTitle">Shift Schedule Preview: Week of [Date]</h3>
+                        <p style="text-align:center; font-size:0.85em; font-style:italic; margin-top:-5px;">Click on a cell to add/remove a standard shift.</p>
+                        <div class="table-responsive-wrapper"><table id="managerSchedulePreviewTable" class="manager-schedule-preview-table"><thead><tr><th>Day</th><th>9:30 - 13:00</th><th>13:00 - 16:30</th></tr></thead><tbody></tbody></table></div>
+                        <div id="managerCustomShiftsPreviewSection" class="hidden" style="margin-top:20px; border-top: 1px dashed #ccc; padding-top: 15px;">
+                            <h4>Custom Shifts/Events this Week</h4>
+                             <div class="table-responsive-wrapper"><table id="managerCustomShiftsPreviewTable"><thead><tr><th>Day</th><th>Date</th><th>Time</th><th>Description</th><th>Assigned</th><th>Action</th></tr></thead><tbody></tbody></table></div>
+                        </div>
+                    </div>
+                    <div class="manager-main-flex-row">
+                        <div class="manager-applications-column">
+                            <h3>Shift Applications Management</h3>
+                            <p style="text-align:center; font-size:0.9em;" id="managerApplicationWeekDisplay"></p>
+                            <div class="view-toggle-buttons" style="text-align: center; margin-bottom: 10px;"><button id="viewStandardShiftsBtnMgr" class="small-action active-view">Standard Shifts</button><button id="viewCustomShiftsBtnMgr" class="small-action">Custom Shifts/Events</button></div>
+                            <div id="standardShiftsManagementSection"><div class="table-responsive-wrapper"><table id="managerShiftsTable"><thead><tr><th>Day</th><th>Date</th><th>Time & Description</th><th>Status</th><th>Applicants</th><th>Actions</th></tr></thead><tbody></tbody></table></div></div>
+                            <div id="customShiftsManagementSection" class="hidden"><div class="table-responsive-wrapper"><table id="managerCustomShiftsApplicationTable"><thead><tr><th>Day</th><th>Date</th><th>Time & Description</th><th>Status</th><th>Applicants</th><th>Actions</th></tr></thead><tbody></tbody></table></div></div>
+                        </div>
+                        <div class="manager-hours-column">
+                            <h3>Hours Overview</h3>
+                            <div class="input-group" style="margin-bottom:5px;"><select id="hoursViewTypeSelect"><option value="weekly">Weekly Hours</option><option value="monthly">Monthly Hours</option></select></div>
+                            <div id="hoursOverviewDisplay"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="managerUnlockModal" class="hidden" style="position:fixed; top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5); display:flex; justify-content:center; align-items:center;"><div style="background:white; padding:30px; border-radius:8px; box-shadow: 0 0 15px rgba(0,0,0,0.3); text-align:center;"><h3>Manager Panel Access</h3><p>Enter Master Admin Password:</p><input type="password" id="masterManagerPasswordInput" style="padding:10px; margin-bottom:15px; width:200px;"><br><button id="unlockManagerPanelBtn">Unlock</button><button id="cancelManagerUnlockBtn" class="deny">Cancel</button><p id="managerUnlockError" class="error-message"></p></div></div>
+        <div id="customAlertModal" class="hidden" style="position:fixed; top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6); display:flex; justify-content:center; align-items:center; z-index: 1000;"><div style="background:white; padding:25px; border-radius:8px; box-shadow: 0 0 15px rgba(0,0,0,0.3); text-align:center; min-width: 280px; max-width: 90%;"><h3 id="customAlertTitle" style="margin-top:0; margin-bottom:15px;">Alert</h3><p id="customAlertMessage" style="margin-bottom:20px;">This is the alert message.</p><button id="customAlertOkBtn" class="approve">OK</button></div></div>
+        <div id="customConfirmModal" class="hidden" style="position:fixed; top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6); display:flex; justify-content:center; align-items:center; z-index: 1000;"><div style="background:white; padding:25px; border-radius:8px; box-shadow: 0 0 15px rgba(0,0,0,0.3); text-align:center; min-width: 280px; max-width: 90%;"><h3 id="customConfirmTitle" style="margin-top:0; margin-bottom:15px;">Confirm</h3><p id="customConfirmMessage" style="margin-bottom:20px;">Are you sure?</p><button id="customConfirmYesBtn" class="approve" style="margin-right:10px;">Yes</button><button id="customConfirmNoBtn" class="secondary">No</button></div></div>
+        <div id="customPromptModal" class="hidden" style="position:fixed; top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6); display:flex; justify-content:center; align-items:center; z-index: 1000;"><div style="background:white; padding:25px; border-radius:8px; box-shadow: 0 0 15px rgba(0,0,0,0.3); text-align:center; min-width: 300px; max-width: 90%;"><h3 id="customPromptTitle" style="margin-top:0; margin-bottom:15px;">Prompt</h3><p id="customPromptMessage" style="margin-bottom:10px;">Enter value:</p><input type="text" id="customPromptInput" style="width: calc(100% - 22px); padding: 10px; margin-bottom: 20px; border: 1px solid #ccc; border-radius: 4px;"><button id="customPromptOkBtn" class="approve" style="margin-right:10px;">OK</button><button id="customPromptCancelBtn" class="secondary">Cancel</button></div></div>
+        <div id="assignEditModal" class="hidden" style="position:fixed; top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6); display:flex; justify-content:center; align-items:center; z-index: 1001;"><div style="background:white; padding:25px; border-radius:8px; box-shadow: 0 0 15px rgba(0,0,0,0.3); text-align:center; min-width: 320px; max-width: 90%;"><h3 id="assignEditModalTitle" style="margin-top:0; margin-bottom:15px;">Assign/Edit Coworkers</h3><div id="assignEditCoworkerList" class="modal-checkbox-list"></div><button id="assignEditSaveBtn" class="approve" style="margin-right:10px;">Save Assignments</button><button id="assignEditCancelBtn" class="secondary">Cancel</button></div></div>
+        <div id="customShiftCreationModal" class="hidden" style="position:fixed; top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6); display:flex; justify-content:center; align-items:center; z-index: 1002;"><div style="background:white; padding:25px; border-radius:8px; box-shadow: 0 0 15px rgba(0,0,0,0.3); width: 90%; max-width: 500px;"><h3 id="customShiftModalTitle" style="margin-top:0; text-align:center;">Add New Custom Shift/Event</h3><div class="input-group"><label for="customShiftDateInput">Date:</label><input type="date" id="customShiftDateInput" style="width: calc(100% - 22px); padding: 10px;"></div><div class="input-group" style="display: flex; justify-content: space-between;"><div style="width: 48%;"><label for="customShiftStartTimeInput">Start Time (HH:MM):</label><input type="time" id="customShiftStartTimeInput" style="width: calc(100% - 22px); padding: 10px;"></div><div style="width: 48%;"><label for="customShiftEndTimeInput">End Time (HH:MM):</label><input type="time" id="customShiftEndTimeInput" style="width: calc(100% - 22px); padding: 10px;"></div></div><div class="input-group"><label for="customShiftDescriptionInput">Description:</label><input type="text" id="customShiftDescriptionInput" placeholder="e.g., Team Meeting, Workshop" style="width: calc(100% - 22px); padding: 10px;"></div><h4>Assign Coworkers (Optional):</h4><div id="customShiftAssignCoworkerList" class="modal-checkbox-list" style="margin-bottom: 20px;"></div><div style="text-align: right;"><button id="saveCustomShiftBtn" class="approve">Add Custom Shift</button><button id="cancelCustomShiftBtn" class="secondary">Cancel</button></div></div></div>
+        <div id="emailPromptModal" class="hidden" style="position:fixed; top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6); display:flex; justify-content:center; align-items:center; z-index: 1003;"><div style="background:white; padding:25px; border-radius:8px; box-shadow: 0 0 15px rgba(0,0,0,0.3); text-align:center; min-width: 320px; max-width: 90%; max-width:450px;"><h3 id="emailPromptTitle" style="margin-top:0; margin-bottom:15px;">Add Your Email</h3><p id="emailPromptMessage" style="margin-bottom:10px;">Please add your email address. This can be used for important notifications in the future.</p><div class="input-group" style="margin-bottom: 15px;"><label for="emailPromptInput" style="text-align:left;">Email Address:</label><input type="email" id="emailPromptInput" placeholder="your.email@example.com" style="width: calc(100% - 22px); padding: 10px; border: 1px solid #ccc; border-radius: 4px;"></div><p id="emailPromptError" class="error-message" style="margin-top:0; margin-bottom:10px;"></p><div style="margin-bottom: 15px; text-align: left;"><input type="checkbox" id="emailPromptDontRemindCheckbox" style="margin-right: 5px;"><label for="emailPromptDontRemindCheckbox" style="font-size: 0.9em;">Don't remind me again</label></div><button id="emailPromptSaveBtn" class="approve" style="margin-right:10px;">Save Email</button><button id="emailPromptSkipBtn" class="secondary">Skip for Now</button></div></div>
+        <div id="tradeOptionsModal" class="hidden" style="position:fixed; top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6); display:flex; justify-content:center; align-items:center; z-index: 1004;"><div style="background:white; padding:25px; border-radius:8px; box-shadow: 0 0 15px rgba(0,0,0,0.3); text-align:center; min-width: 320px; max-width: 90%; max-width:450px;"><h3 id="tradeOptionsModalTitle" style="margin-top:0; margin-bottom:15px;">Trade Your Shift</h3><p style="margin-bottom:20px;">How would you like to trade this shift?</p><button id="showSwapModalBtn" class="approve" style="width:100%; margin-bottom:10px;">Swap with a Coworker</button><button id="offerGiveawayBtn" class="edit" style="width:100%; margin-bottom:15px;">Offer as Giveaway</button><button id="cancelTradeOptionsBtn" class="deny" style="width:100%;">Cancel</button></div></div>
+        <div id="swapShiftModal" class="hidden" style="position:fixed; top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6); display:flex; justify-content:center; align-items:center; z-index: 1005;"><div style="background:white; padding:25px; border-radius:8px; box-shadow: 0 0 15px rgba(0,0,0,0.3); text-align:center; min-width: 320px; max-width: 90%; max-width:500px;"><h3 id="swapShiftModalTitle" style="margin-top:0; margin-bottom:15px;">Swap Your Shift</h3><p style="margin-bottom:10px;">Select a shift from a coworker to propose a swap.</p><div class="input-group"><label for="swapShiftWithSelect">Available shifts to swap:</label><select id="swapShiftWithSelect" style="width: 100%; padding: 10px;"></select><p id="swapShiftLoadingError" class="error-message" style="margin-top:5px;"></p></div><button id="sendSwapRequestBtn" class="approve" style="margin-right:10px;">Send Swap Request</button><button id="cancelSwapShiftBtn" class="secondary">Cancel</button></div></div>
+        <div id="coworkerManagementModal" class="hidden" style="position:fixed; top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6); display:flex; justify-content:center; align-items:center; z-index: 1006;"><div style="background:white; padding:25px; border-radius:8px; box-shadow: 0 0 15px rgba(0,0,0,0.3); width: 90%; max-width: 600px;"><h3 style="margin-top:0; text-align:center;">Manage Coworkers</h3><div id="coworkerManagementContent"><div class="input-group"><label for="newCoworkerNameModal">Add Name:</label><input type="text" id="newCoworkerNameModal" placeholder="Coworker's name"><label for="newCoworkerPasswordModal" style="margin-top:5px;">Set Password:</label><input type="password" id="newCoworkerPasswordModal" placeholder="Initial password"><label style="margin-top:5px;"><input type="checkbox" id="newCoworkerIsManagerModal"> Is Manager?</label><button id="addCoworkerBtnModal" style="margin-top:10px;">Add Coworker</button></div><div id="coworkerListModal"></div></div><button id="closeCoworkerManagerModalBtn" class="secondary" style="display:block; margin: 20px auto 0 auto;">Close</button></div></div>
+        <div id="hoursSummaryModal" class="hidden" style="position:fixed; top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6); display:flex; justify-content:center; align-items:center; z-index: 1007;"><div style="background:white; padding:25px; border-radius:8px; box-shadow: 0 0 15px rgba(0,0,0,0.3); width: 90%; max-width: 500px;"><h3 style="margin-top:0; text-align:center;">Total Hours Summary</h3><div id="hoursSummaryContent"><div class="input-group"><label for="totalHoursPeriodSelectModal" style="display:inline-block; margin-right:10px;">Select Period:</label><select id="totalHoursPeriodSelectModal"><option value="viewing_week">Currently Viewed Week</option><option value="viewing_month">Currently Viewed Month</option><option value="all_loaded">All Loaded Data</option></select></div><div class="table-responsive-wrapper"><table id="totalHoursSummaryTableModal"><thead><tr><th>Coworker</th><th>Total Approved Hours</th></tr></thead><tbody></tbody></table></div></div><button id="closeHoursSummaryModalBtn" class="secondary" style="display:block; margin: 20px auto 0 auto;">Close</button></div></div>
+
+        <div id="myPastShiftsModal" class="hidden" style="position:fixed; top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6); display:flex; justify-content:center; align-items:center; z-index: 1008;">
+            <div style="background:white; padding:25px; border-radius:8px; box-shadow: 0 0 15px rgba(0,0,0,0.3); width: 90%; max-width: 700px;">
+                <h3 style="margin-top:0; text-align:center;">My Past Shifts History</h3>
+                <div id="pastShiftsControlsModal" class="week-navigation" style="display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 10px;">
+                    <select id="pastShiftsViewTypeSelectModal" style="padding:5px; font-size:0.9em;">
+                        <option value="weekly">View by Week</option>
+                        <option value="monthly">View by Month</option>
+                        <option value="yearly">View by Year</option>
+                        <option value="total">View Total</option>
+                    </select>
+                    <div id="pastShiftsNavigationContainerModal">
+                        <button id="prevPastPeriodBtnModal" class="small-action">« Previous</button>
+                        <span style="text-align:center; font-size:0.9em; margin: 0 10px;" id="myPastShiftsPeriodDisplayModal"></span>
+                        <button id="nextPastPeriodBtnModal" class="small-action">Next »</button>
+                    </div>
+                </div>
+                <div class="table-responsive-wrapper" style="max-height: 60vh; overflow-y: auto;">
+                    <table id="myPastShiftsTableModal">
+                        <thead><tr><th>Date</th><th>Day</th><th>Time & Description</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <button id="closeMyPastShiftsModalBtn" class="deny" style="display:block; margin: 20px auto 0 auto;">Close</button>
+            </div>
+        </div>
+
+    </div>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script defer src="script.js"></script>
+</body>
+</html>
